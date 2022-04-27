@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using MQTTnet;
 using MQTTnet.Server;
@@ -29,6 +30,12 @@ namespace MQTTFirstLook.Broker
             IMqttServer mqttServer = new MqttFactory().CreateMqttServer();
 
             mqttServer.StartAsync(options.Build()).GetAwaiter().GetResult();
+            Console.WriteLine("Server MQTT started at:");
+            var host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (var ip in host.AddressList)
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                    Console.WriteLine(ip.ToString()  + ":" + mqttServer.Options.DefaultEndpointOptions.Port);
+
             Console.ReadLine();
         }
 
